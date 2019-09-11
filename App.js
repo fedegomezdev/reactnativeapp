@@ -4,6 +4,8 @@ import MapView  from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import  DestinationButton  from './components/DestinationButton';
+import  CurrentLocationButton  from './components/CurrentLocationButton';
+
 
 export default class App extends React.Component {
   constructor(props){
@@ -31,18 +33,34 @@ export default class App extends React.Component {
     this.setState({region : region })
   }
 
+    centerMap(){
+      const { latitude , longitude , latitudeDelta , longitudeDelta} = this.state.region;
+
+      this.map.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta,
+        longitudeDelta
+      })
+    }
+
+
   render(){
   return (
     <View style={styles.container}>
-      <Text>Remisesria</Text>
+      
       <DestinationButton />
+      <CurrentLocationButton cb={()=> {this.centerMap()}}/>
+      
       <MapView 
         initialRegion={this.state.region}
         showsUserLocation={true}
         showsCompass={true}
+        ref={(map)=> {this.map = map}}
         rotateEnabled={false}
         style={{flex : 1}}
       />
+
     </View>
   );
 }
